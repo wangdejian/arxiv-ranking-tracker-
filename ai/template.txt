@@ -1,4 +1,5 @@
-Please analyze the following abstract of papers. 
+Please analyze the following abstract of a paper related to search, recommendation, or advertising systems.
+Focus on its relevance to ranking models and industrial applications.
 
 Content:
 {content}

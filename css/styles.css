@@ -2326,3 +2326,53 @@ footer {
   display: flex;
   align-items: center;
 }
+
+/* Domain & Importance Tags */
+.domain-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #e0f2fe, #dbeafe);
+  color: #1e40af;
+  margin-left: 4px;
+}
+
+.importance-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  margin-left: 4px;
+}
+
+.importance-high {
+  background: linear-gradient(135deg, #fef2f2, #fee2e2);
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+.importance-medium {
+  background: linear-gradient(135deg, #fffbeb, #fef3c7);
+  color: #d97706;
+  border: 1px solid #fde68a;
+}
+
+.importance-low {
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  color: #16a34a;
+  border: 1px solid #bbf7d0;
+}
+
+.high-importance-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #dc2626;
+  box-shadow: 0 0 6px rgba(220, 38, 38, 0.5);
+}

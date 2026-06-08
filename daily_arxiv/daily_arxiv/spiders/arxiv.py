@@ -6,13 +6,35 @@ import re
 class ArxivSpider(scrapy.Spider):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        categories = os.environ.get("CATEGORIES", "cs.CV")
+        # 搜推广领域核心分类: cs.IR(信息检索), cs.AI(人工智能), cs.LG(机器学习), cs.CL(自然语言处理)
+        categories = os.environ.get("CATEGORIES", "cs.IR")
         categories = categories.split(",")
         # 保存目标分类列表，用于后续验证
         self.target_categories = set(map(str.strip, categories))
         self.start_urls = [
             f"https://arxiv.org/list/{cat}/new" for cat in self.target_categories
-        ]  # 起始URL（计算机科学领域的最新论文）
+        ]  # 起始URL
+
+        # 搜推广领域关键词筛选（标题+摘要中匹配）
+        # 这些关键词用于在爬取后进行二次过滤，聚焦于排序模型方向
+        keywords_str = os.environ.get("KEYWORDS", "")
+        if keywords_str:
+            self.filter_keywords = [k.strip().lower() for k in keywords_str.split(",") if k.strip()]
+        else:
+            # 默认搜推广排序模型相关关键词
+            self.filter_keywords = [
+                "ranking", "reranking", "learning to rank", "ltr",
+                "recommendation", "recommender", "search", "retrieval",
+                "click-through", "ctr", "cvr", "cps",
+                "ad ranking", "ad recommendation",
+                "personalized ranking", "scoring",
+                "pre-ranking", "preranking", "rough sort",
+                "multi-task ranking", "multitask",
+                "embedding", "match", "recall", "retrieval",
+                "deep interest", "din", "dien", "dsin",
+                "attention", "feature interaction",
+            ]
+        self.logger.info(f"Filter keywords: {self.filter_keywords}")
 
     name = "arxiv"  # 爬虫名称
     allowed_domains = ["arxiv.org"]  # 允许爬取的域名
@@ -63,7 +85,7 @@ class ArxivSpider(scrapy.Spider):
                 if paper_categories.intersection(self.target_categories):
                     yield {
                         "id": arxiv_id,
-                        "categories": list(paper_categories),  # 添加分类信息用于调试
+                        "categories": list(paper_categories),
                     }
                     self.logger.info(f"Found paper {arxiv_id} with categories {paper_categories}")
                 else:

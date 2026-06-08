@@ -1,10 +1,11 @@
 ### [{idx}] [{title}]({url})
 *{authors}*
 
-Main category: {cate}
+Main category: {cate} | Domain: {domain} | Importance: {importance}
 
 TL;DR: {tldr}
 
+Ranking Relevance: {ranking_relevance}
 
 <details>
   <summary>Details</summary>

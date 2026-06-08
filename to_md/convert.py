@@ -8,7 +8,7 @@ if __name__ == "__main__":
     parser.add_argument("--data", type=str, help="Path to the jsonline file")
     args = parser.parse_args()
     data = []
-    preference = os.environ.get('CATEGORIES', 'cs.CV, cs.CL').split(',')
+    preference = os.environ.get('CATEGORIES', 'cs.IR').split(',')
     preference = list(map(lambda x: x.strip(), preference))
     def rank(cate):
         if cate in preference:
@@ -47,7 +47,7 @@ if __name__ == "__main__":
                     continue
                 
                 # Check if all required AI fields are present
-                required_fields = ['tldr', 'motivation', 'method', 'result', 'conclusion']
+                required_fields = ['tldr', 'motivation', 'method', 'result', 'conclusion', 'domain', 'importance', 'ranking_relevance']
                 if not all(field in ai_data for field in required_fields):
                     print(f"Skipping item '{item.get('title', 'Unknown')}' due to incomplete AI fields")
                     continue
@@ -55,7 +55,7 @@ if __name__ == "__main__":
                 papers.append(
                     template.format(
                         title=item["title"],
-                        authors=",".join(item["authors"]),
+                        authors=", ".join(item["authors"]),
                         summary=item["summary"],
                         url=item['abs'],
                         tldr=ai_data.get('tldr', ''),
@@ -63,6 +63,9 @@ if __name__ == "__main__":
                         method=ai_data.get('method', ''),
                         result=ai_data.get('result', ''),
                         conclusion=ai_data.get('conclusion', ''),
+                        domain=ai_data.get('domain', '其他/Other'),
+                        importance=ai_data.get('importance', '低/Low'),
+                        ranking_relevance=ai_data.get('ranking_relevance', ''),
                         cate=item['categories'][0],
                         idx=next(idx)
                     )

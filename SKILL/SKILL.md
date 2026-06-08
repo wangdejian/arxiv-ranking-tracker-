@@ -1,33 +1,50 @@
 ---
-name: daily-arxiv-ai-enhanced
+name: arxiv-ranking-tracker
 version: 0.1
-description: 通过URL请求，从daily-arxiv-ai-enhanced项目中获取论文json数据
+description: 搜推广领域arXiv论文追踪，聚焦排序模型方向
 ---
 
-# arXiv论文数据API
+# 搜推广领域 ArXiv 论文数据 API
 
 ## 触发条件
-用户想要获取daily-arXiv-ai-enhanced项目中的数据
+用户想要获取搜推广领域（搜索/推荐/广告）的arXiv论文数据，尤其是排序模型方向
 
 ## 功能说明
-通过URL参数获取JSON格式的arXiv论文数据
+通过URL参数获取JSON格式的arXiv论文数据，聚焦搜推广领域
 
 ## 基础仓库 URL
-https://dw-dengwei.github.io/daily-arXiv-ai-enhanced/
+由 GitHub Actions 自动注入
 
 ## URL参数
 
 | 参数 | 说明 | 示例 |
 |------|------|------|
-| `category` | arXiv类别 | `cs.CV`, `cs.AI`, etc. |
+| `category` | arXiv类别 | `cs.IR`, `cs.AI`, etc. |
 | `author` | 作者姓名 | `Smith` |
-| `keywords` | 关键词，逗号分隔 | `vision,learning` |
+| `keywords` | 关键词，逗号分隔 | `ranking,recommendation` |
+
+## 搜推广领域筛选关键词
+
+### 排序模型核心
+- ranking, reranking, learning to rank, ltr
+- ctr, cvr, cps, click-through
+- pre-ranking, preranking, rough sort
+- multi-task ranking
+
+### 召回与检索
+- retrieval, recall, matching, embedding
+- vector search, approximate nearest neighbor
+
+### 推荐系统
+- recommendation, recommender, collaborative filtering
+
+### 广告系统
+- ad ranking, ad recommendation, bid optimization
 
 ## 样例
 ```
-bash scripts/fetch.sh "https://dw-dengwei.github.io/daily-arXiv-ai-enhanced/?category=cs.CV&author=Smith&keywords=deep"
+bash scripts/fetch.sh "https://<username>.github.io/arxiv-ranking-tracker/?category=cs.IR&keywords=ranking,recommendation"
 ```
-这里使用到了`fetch.sh`脚本来发送请求并处理响应数据，该脚本基于NodeJS和puppeteer环境，如果没有安装则会自动安装。你不能直接wget或curl这个url，因为它需要执行JavaScript来生成最终的JSON响应。
 
 ## 筛选逻辑
 
@@ -44,19 +61,22 @@ category AND (keywords OR author)
 
 ```json
 {
-  "category": "cs.CV",
+  "category": "cs.IR",
   "author": "Smith",
-  "keywords": ["deep"],
+  "keywords": ["ranking"],
   "count": 10,
   "papers": [
     {
       "id": "2401.00001",
       "title": "标题",
       "authors": "作者1, 作者2",
-      "categories": ["cs.CV"],
+      "categories": ["cs.IR"],
       "summary": "tldr",
       "date": "2024-01-01",
-      "url": "https://arxiv.org/abs/2401.00001"
+      "url": "https://arxiv.org/abs/2401.00001",
+      "domain": "排序模型/Ranking",
+      "importance": "高/High",
+      "ranking_relevance": "与排序模型的关系说明"
     }
   ]
 }

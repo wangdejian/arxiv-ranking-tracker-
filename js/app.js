@@ -372,6 +372,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   fetchGitHubStats();
 
+  // 设置 GitHub 仓库链接
+  const githubLink = document.getElementById('githubRepoLink');
+  if (githubLink && DATA_CONFIG.repoOwner !== 'PLACEHOLDER_REPO_OWNER') {
+    githubLink.href = `https://github.com/${DATA_CONFIG.repoOwner}/${DATA_CONFIG.repoName}`;
+  }
+
   // 加载用户关键词
   loadUserKeywords();
 
@@ -393,7 +399,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function fetchGitHubStats() {
   try {
-    const response = await fetch('https://api.github.com/repos/dw-dengwei/daily-arXiv-ai-enhanced');
+    // 使用动态 repo 信息
+    const repoUrl = `https://api.github.com/repos/${DATA_CONFIG.repoOwner}/${DATA_CONFIG.repoName}`;
+    const response = await fetch(repoUrl);
     const data = await response.json();
     const starCount = data.stargazers_count;
     const forkCount = data.forks_count;
@@ -930,6 +938,9 @@ function parseJsonlData(jsonlText, date) {
         method: paper.AI && paper.AI.method ? paper.AI.method : '',
         result: paper.AI && paper.AI.result ? paper.AI.result : '',
         conclusion: paper.AI && paper.AI.conclusion ? paper.AI.conclusion : '',
+        domain: paper.AI && paper.AI.domain ? paper.AI.domain : '',
+        importance: paper.AI && paper.AI.importance ? paper.AI.importance : '',
+        ranking_relevance: paper.AI && paper.AI.ranking_relevance ? paper.AI.ranking_relevance : '',
         code_url: paper.code_url || '',
         code_stars: paper.code_stars || 0,
         code_last_update: paper.code_last_update || ''
@@ -1402,11 +1413,14 @@ function renderPapers() {
     paperCard.innerHTML = `
       <div class="paper-card-index">${index + 1}</div>
       ${paper.isMatched ? '<div class="match-badge" title="匹配您的搜索条件"></div>' : ''}
+      ${paper.importance && paper.importance.includes('高') ? '<div class="high-importance-badge" title="高重要性"></div>' : ''}
       <div class="paper-card-header">
         <h3 class="paper-card-title">${highlightedTitle}</h3>
         <p class="paper-card-authors">${formattedAuthors}</p>
         <div class="paper-card-categories">
           ${categoryTags}
+          ${paper.domain ? `<span class="domain-tag">${paper.domain}</span>` : ''}
+          ${paper.importance ? `<span class="importance-tag importance-${paper.importance.includes('高') ? 'high' : paper.importance.includes('中') ? 'medium' : 'low'}">${paper.importance}</span>` : ''}
         </div>
       </div>
       <div class="paper-card-body">
@@ -1504,10 +1518,14 @@ function showPaperDetails(paper, paperIndex) {
       <p><strong>Authors: </strong>${highlightedAuthors}</p>
       <p><strong>Categories: </strong>${categoryDisplay}</p>
       <p><strong>Date: </strong>${formatDate(paper.date)}</p>
+      ${paper.domain ? `<p><strong>Domain: </strong><span class="domain-tag">${paper.domain}</span></p>` : ''}
+      ${paper.importance ? `<p><strong>Importance: </strong><span class="importance-tag importance-${paper.importance.includes('高') ? 'high' : paper.importance.includes('中') ? 'medium' : 'low'}">${paper.importance}</span></p>` : ''}
       
       
       <h3>TL;DR</h3>
       <p>${highlightedSummary}</p>
+      
+      ${paper.ranking_relevance ? `<div class="paper-section"><h4>Ranking Relevance</h4><p>${paper.ranking_relevance}</p></div>` : ''}
       
       <div class="paper-sections">
         ${paper.motivation ? `<div class="paper-section"><h4>Motivation</h4><p>${highlightedMotivation}</p></div>` : ''}
